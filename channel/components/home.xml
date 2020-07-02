@@ -6,12 +6,16 @@
   ' - - - - - - - - - - - - - - - - - - - - - - - - - '
   ' -             ~*Brightscript Sux*~              - '
   ' - - - - - - - - - - - - - - - - - - - - - - - - - '
-
   sub init()
     ' sets up a queue for the events from the feed and a global timer.
     ' m is the global scope, deal with it.
     m.eventqueue = []
     m.metronomecount = 0
+
+    m.testtimer = m.top.findNode("metronome")
+    ' m.eventdescription.font.uri = "pkg:/EskellDisplayLarge.otf"
+
+
 
     ' access the timer node and save it to the testtimer variable
     m.testtimer = m.top.findNode("metronome")
@@ -22,31 +26,36 @@
 
     ' this secret ritual has been passed down through the ages, though few know its true origin
     m.top.setFocus(true)
-
   end sub
 
-  ' the task list
+
+  ' - - - - - - - - - - '
+  ' -- the task list -- '
+  ' - - - - - - - - - - '
   sub looper()
     ' increment counter & grab text node
     
-    m.metronomecount++
+    m.metronomecount = m.metronomecount + 1
     m.eventdescription = m.top.findNode("eventDescription")
 
-    request = CreateObject("roUrlTransfer")
-    request.SetCertificatesFile("common:/certs/ca-bundle.crt")
-    request.SetUrl("https://superrare.co/sr-json/v0/nfts/events?limit=1&event_types=creation&event_types=bid&event_types=sale")
+    ' request = CreateObject("roUrlTransfer")
+    ' request.SetCertificatesFile("common:/certs/ca-bundle.crt")
+    ' request.SetUrl("https://superrare.co/sr-json/v0/nfts/events?limit=1&event_types=creation&event_types=bid&event_types=sale")
 
-    m.eventdescription.text = request.GetToString()
+    ' m.eventdescription.text = request.GetToString()
     
     ' if we are on the 15
-    if m.metronomecount MOD 3 = 0 then
+    if m.metronomecount MOD 3 = 0
       ' hit api
-          request = CreateObject("roUrlTransfer")
-          request.SetUrl("https://superrare.co/sr-json/v0/nfts/events?limit=1&event_types=creation&event_types=bid&event_types=sale")
-          m.eventdescription.text = request.GetToString()
+      ' request = CreateObject("roUrlTransfer")
+      ' request.SetUrl("https://superrare.co/sr-json/v0/nfts/events?limit=1&event_types=creation&event_types=bid&event_types=sale")
+      m.eventdescription.text = "This is when we'd check for a new event"
+      
       ' add events to queue
       ' if queue length > 1
         ' pop and lock
+    else if (m.metronomecount - 1) MOD 3 = 0
+      m.eventdescription.text = "show the details"
     end if
 
     
@@ -62,12 +71,12 @@
     repeat="true"
     duration="5"
   />
-  <Label
-    id="eventDescription"
-    width="1280"
-    text = "Let's wait for an update!"
-    horizAlign = "left"
-    vertAlign = "center"
+  <Label 
+    id="eventDescription" 
+    width="1280" 
+    text = "Show the top event here" 
+    horizAlign = "left" 
+    vertAlign = "center" 
     translation="[20,520]"
   />
 </children>
