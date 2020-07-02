@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<component name="home" extends="Scene"> 
+
+<script type="text/brightscript" >
+<![CDATA[
+  ' - - - - - - - - - - - - - - - - - - - - - - - - - '
+  ' -             ~*Brightscript Sux*~              - '
+  ' - - - - - - - - - - - - - - - - - - - - - - - - - '
+
+  sub init()
+    ' sets up a queue for the events from the feed and a global timer.
+    ' m is the global scope, deal with it.
+    m.eventqueue = []
+    m.metronomecount = 0
+
+    ' access the timer node and save it to the testtimer variable
+    m.testtimer = m.top.findNode("metronome")
+    ' start the timer
+    m.testtimer.control = "start"
+    ' listen for the "fire" event, respond by calling the main subroutine
+    m.testtimer.ObserveField("fire", "looper")
+
+    ' this secret ritual has been passed down through the ages, though few know its true origin
+    m.top.setFocus(true)
+
+  end sub
+
+  ' the task list
+  sub looper()
+    ' increment counter & grab text node
+    
+    m.metronomecount++
+    m.eventdescription = m.top.findNode("eventDescription")
+
+    request = CreateObject("roUrlTransfer")
+    request.SetCertificatesFile("common:/certs/ca-bundle.crt")
+    request.SetUrl("https://superrare.co/sr-json/v0/nfts/events?limit=1&event_types=creation&event_types=bid&event_types=sale")
+
+    m.eventdescription.text = request.GetToString()
+    
+    ' if we are on the 15
+    if m.metronomecount MOD 3 = 0 then
+      ' hit api
+          request = CreateObject("roUrlTransfer")
+          request.SetUrl("https://superrare.co/sr-json/v0/nfts/events?limit=1&event_types=creation&event_types=bid&event_types=sale")
+          m.eventdescription.text = request.GetToString()
+      ' add events to queue
+      ' if queue length > 1
+        ' pop and lock
+    end if
+
+    
+    
+  end sub
+
+]]>
+</script>
+
+<children>
+  <Timer
+    id="metronome"
+    repeat="true"
+    duration="5"
+  />
+  <Label
+    id="eventDescription"
+    width="1280"
+    text = "Let's wait for an update!"
+    horizAlign = "left"
+    vertAlign = "center"
+    translation="[20,520]"
+  />
+</children>
+
+</component>
